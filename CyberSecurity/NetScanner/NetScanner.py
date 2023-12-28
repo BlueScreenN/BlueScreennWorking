@@ -23,3 +23,6 @@ def ScanMyNetwork(ip):
 
 userIpAdress = GetUserInput()
 ScanMyNetwork(userIpAdress.ipAdress)
+
+
+#python3 file name -i x.x.x.x can use this method
