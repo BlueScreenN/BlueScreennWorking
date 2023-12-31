@@ -1,2 +1,3 @@
 # BlueScreennWorking
-Hey. This is only for development.
+
+These programs are for education only!
